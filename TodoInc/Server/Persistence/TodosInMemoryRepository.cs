@@ -11,7 +11,15 @@ namespace TodoInc.Server.Persistence
     {
         public TodosInMemoryRepository()
         {
-            Store = InitializeStore();
+            var seedData = new[]
+            {
+                new KeyValuePair<int,Todo>(1, new Todo("Water the plants") {Id = 1, Description = "Use mineral water"}),
+                new KeyValuePair<int,Todo>(2, new Todo("Pay electricity bill") {Id = 2, IsComplete = true}),
+                new KeyValuePair<int,Todo>(3, new Todo("Feed Mr. Meow") {Id = 3, Description = "Include treat"}),
+                new KeyValuePair<int,Todo>(4, new Todo("Submit report") {Id = 4, DeletedDateUtc = new DateTime(2020,01,01)})
+            };
+
+            Store = new ConcurrentDictionary<int, Todo>(seedData);
         }
 
         public ConcurrentDictionary<int, Todo> Store { get; }
@@ -20,7 +28,6 @@ namespace TodoInc.Server.Persistence
         {
             if (filter is null) return Task.FromResult(Store.Values.AsEnumerable());
             return Task.FromResult(Store.Values.Where(filter));
-
         }
 
         public Task<Todo?> GetTodoAsync(int todoId)
@@ -43,19 +50,6 @@ namespace TodoInc.Server.Persistence
             if (!todoExists) return Task.FromResult(false);
             todo!.DeletedDateUtc = DateTime.UtcNow;
             return Task.FromResult(Store.TryUpdate(id, todo, todo));
-        }
-
-        private static ConcurrentDictionary<int, Todo> InitializeStore()
-        {
-            var seedData = new[]
-            {
-                new KeyValuePair<int,Todo>(1, new Todo("Water the plants") {Id = 1, Description = "Use mineral water"}),
-                new KeyValuePair<int,Todo>(2, new Todo("Pay electricity bill") {Id = 2, IsComplete = true}),
-                new KeyValuePair<int,Todo>(3, new Todo("Feed Mr. Meow") {Id = 3, Description = "Include treat"}),
-                new KeyValuePair<int,Todo>(4, new Todo("Submit report") {Id = 4, DeletedDateUtc = new DateTime(2020,01,01)})
-            };
-
-            return new ConcurrentDictionary<int, Todo>(seedData);
         }
     }
 }

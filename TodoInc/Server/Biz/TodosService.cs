@@ -18,7 +18,7 @@ namespace TodoInc.Server.Biz
         public async Task<IEnumerable<TodoRecord>> GetTodosAsync()
         {
             var todoEntities = await _todosRepository.GetTodosAsync(todo => todo.DeletedDateUtc is null);
-            return todoEntities.Select(entity => new TodoRecord(entity.Id, entity.Title, entity.Description));
+            return todoEntities.Select(entity => new TodoRecord(entity.Id, entity.Title, entity.Description, entity.IsComplete));
         }
     }
 }

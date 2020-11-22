@@ -1,3 +1,27 @@
 ﻿@page "/"
+@inject HttpClient HttpClient
 
-<h1>Todo Inc</h1>
+<h1>Todos</h1>
+
+@if (_todoRecords == null)
+{
+    <p>Loading todos...</p>
+}
+else
+{
+    foreach (var todoRecord in _todoRecords)
+    {
+        <TodoCard TodoRecord="@todoRecord" />
+        <hr/>
+    }
+}
+
+@code
+{
+    private IEnumerable<TodoRecord> _todoRecords;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _todoRecords = await HttpClient.GetFromJsonAsync<IEnumerable<TodoRecord>>("todos");
+    }
+}

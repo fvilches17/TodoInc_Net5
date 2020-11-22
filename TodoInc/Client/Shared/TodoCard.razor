@@ -3,9 +3,11 @@
         <input class="checkbox-round"
                id="@CheckBoxId"
                type="checkbox"
-               checked="@TodoRecord.IsComplete" >
+               checked="@TodoRecord.IsComplete"
+               @onclick="@InvokeOnCheckboxTickedAsync">
     </div>
     <div class="card-body">
+        
         <h5 class="card-title">
             @if (TodoRecord.IsComplete)
             {
@@ -26,19 +28,3 @@
         <a href="#" class="btn btn-danger"><span class="oi oi-trash"></span></a>
     </div>
 </div>
-
-@code
-{
-    [Parameter]
-    public TodoRecord TodoRecord { get; set; } = null!;
-
-    private string CheckBoxId => $"cbx-{TodoRecord.Id}";
-
-    protected override void OnInitialized()
-    {
-        if (TodoRecord == null)
-        {
-            throw new ArgumentException($"'{nameof(TodoCard)}' component initialized with empty param", nameof(TodoRecord));
-        }
-    }
-}

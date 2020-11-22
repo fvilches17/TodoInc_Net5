@@ -1,27 +1,37 @@
 ﻿@page "/"
-@inject HttpClient HttpClient
 
-<h1>Todos</h1>
-
-@if (_todoRecords == null)
+@if (_todoRecords is null)
 {
-    <p>Loading todos...</p>
+    <p>Loading todo's...</p>
 }
 else
 {
     foreach (var todoRecord in _todoRecords)
     {
-        <TodoCard TodoRecord="@todoRecord" />
+        <TodoCard 
+            @key="@todoRecord.Id" 
+             TodoRecord="@todoRecord" 
+             OnCheckboxTicked="@(async id => await ToggleTodoCompletedStatusAsync(id))" />
         <hr/>
     }
 }
 
-@code
-{
+@code{
+
     private IEnumerable<TodoRecord> _todoRecords;
+
+    [Inject]
+    public HttpClient ApiClient { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        _todoRecords = await HttpClient.GetFromJsonAsync<IEnumerable<TodoRecord>>("todos");
+        _todoRecords = await ApiClient.GetFromJsonAsync<IEnumerable<TodoRecord>>("api/todos");
     }
+
+    private async Task ToggleTodoCompletedStatusAsync(int todoId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, $"api/todos/{todoId}/toggleCompletedStatus");
+        await ApiClient.SendAsync(request);
+    }
+
 }

@@ -20,5 +20,24 @@ namespace TodoInc.Server.Biz
             var todoEntities = await _todosRepository.GetTodosAsync(todo => todo.DeletedDateUtc is null);
             return todoEntities.Select(entity => new TodoRecord(entity.Id, entity.Title, entity.Description, entity.IsComplete));
         }
+
+        public async Task<OperationStatus> ToggleTodoCompletedStatusAsync(int id)
+        {
+            var todo = await _todosRepository.GetTodoAsync(id);
+
+            if (todo is null)
+            {
+                return OperationStatus.EntityNotFound;
+            }
+
+            todo.IsComplete = !todo.IsComplete;
+
+            if (await _todosRepository.UpdateTodoAsync(todo))
+            {
+                return OperationStatus.Success;
+            }
+
+            return OperationStatus.UnexpectedResult;
+        }
     }
 }

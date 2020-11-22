@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TodoInc.Server.Biz;
+using TodoInc.Server.Persistence;
 
 namespace TodoInc.Server
 {
@@ -9,6 +11,9 @@ namespace TodoInc.Server
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddSingleton<ITodosRepository, TodosInMemoryRepository>()
+                .AddScoped<TodosService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

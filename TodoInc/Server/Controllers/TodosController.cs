@@ -19,7 +19,7 @@ namespace TodoInc.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TodoRecord>> GetTodos() => await _todosService.GetTodosAsync();
+        public async Task<IEnumerable<TodoRecord>> GetTodos(bool includeCompleted = true) => await _todosService.GetTodosAsync(includeCompleted);
 
         [HttpPost("{id}/toggleCompletedStatus")]
         public async Task<IActionResult> CompleteTodo(int id) => await _todosService.ToggleTodoCompletedStatusAsync(id) switch

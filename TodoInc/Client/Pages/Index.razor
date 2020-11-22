@@ -6,10 +6,14 @@
 }
 else
 {
+    <button class="btn btn-dark mb-2 d-block ml-auto" @onclick="@ToggleCompletedTodosVisibility">
+        @(_showCompletedTodos ? "Hide" : "Show") Completed
+    </button>
+    
     foreach (var todoRecord in _todoRecords)
     {
         <TodoCard 
-            @key="@todoRecord.Id" 
+            @key="@todoRecord.Id"
              TodoRecord="@todoRecord" 
              OnCheckboxTicked="@(async id => await ToggleTodoCompletedStatusAsync(id))" />
         <hr/>
@@ -19,6 +23,7 @@ else
 @code{
 
     private IEnumerable<TodoRecord> _todoRecords;
+    private bool _showCompletedTodos = true;
 
     [Inject]
     public HttpClient ApiClient { get; set; } = null!;
@@ -34,4 +39,9 @@ else
         await ApiClient.SendAsync(request);
     }
 
+    private async Task ToggleCompletedTodosVisibility()
+    {
+        _showCompletedTodos = !_showCompletedTodos;
+        _todoRecords = await ApiClient.GetFromJsonAsync<IEnumerable<TodoRecord>>($"api/todos?includeCompleted={_showCompletedTodos}");
+    } 
 }

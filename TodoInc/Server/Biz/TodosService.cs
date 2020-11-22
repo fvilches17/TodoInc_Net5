@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TodoInc.Server.Persistence;
@@ -15,10 +16,13 @@ namespace TodoInc.Server.Biz
             _todosRepository = todosRepository;
         }
 
-        public async Task<IEnumerable<TodoRecord>> GetTodosAsync()
+        public async Task<IEnumerable<TodoRecord>> GetTodosAsync(bool includeCompleted)
         {
-            var todoEntities = await _todosRepository.GetTodosAsync(todo => todo.DeletedDateUtc is null);
-            return todoEntities.Select(entity => new TodoRecord(entity.Id, entity.Title, entity.Description, entity.IsComplete));
+            var todoEntities = await _todosRepository.GetTodosAsync(todo => todo.DeletedDateUtc is null && (includeCompleted || !todo.IsComplete));
+
+            return todoEntities
+                .OrderBy(x => x.IsComplete)
+                .Select(entity => new TodoRecord(entity.Id, entity.Title, entity.Description, entity.IsComplete));
         }
 
         public async Task<OperationStatus> ToggleTodoCompletedStatusAsync(int id)

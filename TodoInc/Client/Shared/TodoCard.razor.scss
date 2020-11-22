@@ -1,0 +1,19 @@
+﻿.checkbox-round {
+    width: 1.5em;
+    height: 1.5em;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid darkslategrey;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+
+&:checked {
+     background-color: darkgreen;
+ }
+
+&:hover {
+     filter: brightness(90%);
+ }
+}

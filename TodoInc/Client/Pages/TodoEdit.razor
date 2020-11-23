@@ -1,0 +1,18 @@
+﻿@page "/todo-edit/{TodoId:int}"
+
+<h3>Edit</h3>
+
+<EditForm Model="@TodoEditModel" OnValidSubmit="@HandleOnValidSubmitAsync">
+    <DataAnnotationsValidator/>
+    <div class="form-group">
+        <label for="title">Title: </label>
+        <InputText id="title" class="form-control" @bind-Value="@TodoEditModel.Title"/>
+        <ValidationMessage For="() => TodoEditModel.Title" />
+    </div>
+    <div class="form-group">
+        <label for="description">Description: </label>
+        <InputText id="description" class="form-control" @bind-Value="@TodoEditModel.Description"/>
+        <ValidationMessage For="() => TodoEditModel.Description" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>

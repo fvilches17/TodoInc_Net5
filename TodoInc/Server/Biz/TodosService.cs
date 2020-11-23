@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TodoInc.Server.Persistence;
@@ -25,6 +24,12 @@ namespace TodoInc.Server.Biz
                 .Select(entity => new TodoRecord(entity.Id, entity.Title, entity.Description, entity.IsComplete));
         }
 
+        public async Task<TodoRecord?> GetTodoByIdAsync(int id)
+        {
+            var entity = await _todosRepository.GetTodoAsync(id);
+            return entity is null ? null : new TodoRecord(entity.Id, entity.Title, entity.Description, entity.IsComplete);
+        }
+
         public async Task<OperationStatus> ToggleTodoCompletedStatusAsync(int id)
         {
             var todo = await _todosRepository.GetTodoAsync(id);
@@ -35,6 +40,26 @@ namespace TodoInc.Server.Biz
             }
 
             todo.IsComplete = !todo.IsComplete;
+
+            if (await _todosRepository.UpdateTodoAsync(todo))
+            {
+                return OperationStatus.Success;
+            }
+
+            return OperationStatus.UnexpectedResult;
+        }
+
+        public async Task<OperationStatus> FullUpdateTodoAsync(int id, TodoEditModel editModel)
+        {
+            var todo = await _todosRepository.GetTodoAsync(id);
+
+            if (todo is null)
+            {
+                return OperationStatus.EntityNotFound;
+            }
+
+            todo.Title = editModel.Title;
+            todo.Description = editModel.Description;
 
             if (await _todosRepository.UpdateTodoAsync(todo))
             {

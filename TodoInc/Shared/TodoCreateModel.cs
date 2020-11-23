@@ -2,7 +2,7 @@
 
 namespace TodoInc.Shared
 {
-    public class TodoEditModel
+    public class TodoCreateModel
     {
         [Required]
         public string Title { get; set; }

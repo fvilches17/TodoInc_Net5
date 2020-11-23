@@ -6,16 +6,21 @@
 }
 else
 {
-    <button class="btn btn-dark mb-2 d-block ml-auto" @onclick="@ToggleCompletedTodosVisibility">
-        @(_showCompletedTodos ? "Hide" : "Show") Completed
-    </button>
-    
+    <div class="text-right mb-2">
+        <button class="btn btn-dark" @onclick="@ShowTodoQuickAddDialog">
+            <span class="oi oi-plus"></span>
+        </button>
+        <button class="btn btn-dark ml-auto" @onclick="@ToggleCompletedTodosVisibility">
+            @(_showCompletedTodos ? "Hide" : "Show") Completed
+        </button>
+    </div>
     foreach (var todoRecord in _todoRecords)
     {
-        <TodoCard 
-            @key="@todoRecord.Id"
-             TodoRecord="@todoRecord" 
-             OnCheckboxTicked="@(async id => await ToggleTodoCompletedStatusAsync(id))" />
-        <hr/>
+        <TodoCard @key="@todoRecord.Id"
+              TodoRecord="@todoRecord"
+              OnCheckboxTicked="@(async id => await ToggleTodoCompletedStatusAsync(id))" />
+        <hr />
     }
 }
+
+<TodoQuickAddModal @ref="TodoQuickAddModal" CallbackAction="@TodoQuickAdd_OnDialogClose" />

@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using TodoInc.Shared;
 
-namespace TodoInc.Client.Shared
+namespace TodoInc.Client.Components
 {
     public partial class TodoCard
     {

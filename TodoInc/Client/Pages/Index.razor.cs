@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using TodoInc.Client.Components;
 using TodoInc.Shared;
 
 namespace TodoInc.Client.Pages
@@ -15,10 +16,18 @@ namespace TodoInc.Client.Pages
         [Inject]
         public HttpClient ApiClient { get; set; } = null!;
 
+        public TodoQuickAddModal TodoQuickAddModal { get; set; }
+
         protected override async Task OnInitializedAsync()
+        {
+            await LoadTodosAsync();
+        }
+
+        private async Task LoadTodosAsync()
         {
             _todoRecords = await ApiClient.GetFromJsonAsync<IEnumerable<TodoRecord>>("api/todos");
         }
+
 
         private async Task ToggleTodoCompletedStatusAsync(int todoId)
         {
@@ -30,6 +39,19 @@ namespace TodoInc.Client.Pages
         {
             _showCompletedTodos = !_showCompletedTodos;
             _todoRecords = await ApiClient.GetFromJsonAsync<IEnumerable<TodoRecord>>($"api/todos?includeCompleted={_showCompletedTodos}");
+        }
+
+        private async Task TodoQuickAdd_OnDialogClose()
+        {
+            await LoadTodosAsync();
+            TodoQuickAddModal.Close();
+            StateHasChanged();
+        }
+
+
+        private void ShowTodoQuickAddDialog()
+        {
+            TodoQuickAddModal.Show();
         }
     }
 }

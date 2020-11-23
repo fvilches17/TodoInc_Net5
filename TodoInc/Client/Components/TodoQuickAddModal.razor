@@ -1,0 +1,32 @@
+﻿@if (ShowModal)
+{
+    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Todo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="@Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@TodoModel" OnValidSubmit="@HandleOnValidSubmitAsync">
+                        <DataAnnotationsValidator/>
+                        <div class="form-group">
+                            <label for="title">Title: </label>
+                            <InputText id="title" class="form-control" @bind-Value="@TodoModel.Title"/>
+                            <ValidationMessage For="() => TodoModel.Title" />
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description: </label>
+                            <InputText id="description" class="form-control" @bind-Value="@TodoModel.Description"/>
+                            <ValidationMessage For="() => TodoModel.Description" />
+                        </div>
+                        <button type="submit" class="btn btn-dark">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="@Close">Close</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}

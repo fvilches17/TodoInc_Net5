@@ -21,8 +21,8 @@ namespace TodoInc.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<TodoRecord>> GetTodos(bool includeCompleted = true) => await _todosService.GetTodosAsync(includeCompleted);
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetTodoById(int id)
+        [HttpGet("{id:int}", Name = nameof(GetTodoById))]
+        public async Task<ActionResult<TodoRecord>> GetTodoById(int id)
         {
             var record = await _todosService.GetTodoByIdAsync(id);
 
@@ -31,20 +31,27 @@ namespace TodoInc.Server.Controllers
                 return NotFound();
             }
 
-            return Ok(record);
+            return record;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateTodo(TodoCreateModel model)
+        {
+            var newRecord = await _todosService.CreateTodoAsync(model);
+            return CreatedAtRoute(routeName: nameof(GetTodoById), routeValues: new { newRecord.Id }, value: newRecord);
         }
 
 
         [HttpPost("{id:int}/toggleCompletedStatus")]
-        public async Task<IActionResult> CompleteTodo(int id) => await _todosService.ToggleTodoCompletedStatusAsync(id) switch
+        public async Task<ActionResult> CompleteTodo(int id) => await _todosService.ToggleTodoCompletedStatusAsync(id) switch
         {
             OperationStatus.Success => NoContent(),
             OperationStatus.EntityNotFound => NotFound(),
             _ => throw new Exception($"Unexpected error while attempting to complete todo with id '{id}'")
         };
 
-        [HttpPost("{id:int}")]
-        public async Task<IActionResult> UpdateTodo([FromRoute] int id, TodoEditModel editModel) => await _todosService.FullUpdateTodoAsync(id, editModel) switch
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateTodo([FromRoute] int id, TodoEditModel editModel) => await _todosService.FullUpdateTodoAsync(id, editModel) switch
         {
             OperationStatus.Success => NoContent(),
             OperationStatus.EntityNotFound => NotFound(),

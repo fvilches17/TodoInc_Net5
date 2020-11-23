@@ -68,5 +68,11 @@ namespace TodoInc.Server.Biz
 
             return OperationStatus.UnexpectedResult;
         }
+
+        public async Task<TodoRecord> CreateTodoAsync(TodoCreateModel model)
+        {
+            var newEntity = await _todosRepository.CreateTodoAsync(model.Title, model.Description);
+            return new TodoRecord(newEntity.Id, newEntity.Title, newEntity.Description, IsComplete: false);
+        }
     }
 }

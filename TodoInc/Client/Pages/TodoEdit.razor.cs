@@ -26,7 +26,7 @@ namespace TodoInc.Client.Pages
 
         public async Task HandleOnValidSubmitAsync()
         {
-            await ApiClient.PostAsJsonAsync($"api/todos/{TodoId}", TodoEditModel);
+            await ApiClient.PutAsJsonAsync($"api/todos/{TodoId}", TodoEditModel);
             NavManager.NavigateTo("/");
         }
     }

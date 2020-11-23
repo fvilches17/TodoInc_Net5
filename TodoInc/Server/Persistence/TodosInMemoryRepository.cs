@@ -38,7 +38,7 @@ namespace TodoInc.Server.Persistence
 
         public Task<Todo> CreateTodoAsync(string title, string? description = null)
         {
-            var todo = Store.GetOrAdd(Store.Count, key => new Todo(title) { Id = ++key, Description = description });
+            var todo = Store.GetOrAdd(Store.Count + 1, key => new Todo(title) { Id = key, Description = description });
             return Task.FromResult(todo);
         }
 

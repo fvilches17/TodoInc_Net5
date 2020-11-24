@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -28,7 +29,6 @@ namespace TodoInc.Client.Pages
             _todoRecords = await ApiClient.GetFromJsonAsync<IEnumerable<TodoRecord>>("api/todos");
         }
 
-
         private async Task ToggleTodoCompletedStatusAsync(int todoId)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"api/todos/{todoId}/toggleCompletedStatus");
@@ -52,6 +52,19 @@ namespace TodoInc.Client.Pages
         private void ShowTodoQuickAddDialog()
         {
             TodoQuickAddModal.Show();
+        }
+
+        private async Task DeleteTodoAsync(int id)
+        {
+            var response = await ApiClient.DeleteAsync($"api/todos/{id}");
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Unexpected error occured while deleting todo with id '{id}'");
+            }
+
+            await LoadTodosAsync();
+            StateHasChanged();
         }
     }
 }

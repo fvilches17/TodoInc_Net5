@@ -13,7 +13,11 @@ namespace TodoInc.Client.Components
         [Parameter]
         public Func<int, Task> OnCheckboxTicked { get; set; } = null!;
 
+        [Parameter]
+        public Func<int, Task> OnTodoDeleteButtonClick { get; set; } = null!;
+
         private string CheckBoxId => $"cbx-{TodoRecord.Id}";
+
 
         protected override void OnInitialized()
         {
@@ -28,5 +32,7 @@ namespace TodoInc.Client.Components
             await OnCheckboxTicked.Invoke(TodoRecord.Id);
             TodoRecord = TodoRecord with { IsComplete = !TodoRecord.IsComplete };
         }
+
+        private async Task InvokeOnTodoDeleteButtonClickedAsync() => await OnTodoDeleteButtonClick.Invoke(TodoRecord.Id);
     }
 }

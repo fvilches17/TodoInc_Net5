@@ -58,5 +58,12 @@ namespace TodoInc.Server.Controllers
             _ => throw new Exception($"Unexpected error while attempting to complete todo with id '{id}'")
         };
 
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteTodo(int id) => await _todosService.DeleteTodoAsync(id) switch
+        {
+            OperationStatus.EntityNotFound => NotFound(),
+            OperationStatus.Success => Ok(),
+            _ => throw new Exception($"Unexpected error occured while deleting todo with id '{id}'")
+        };
     }
 }

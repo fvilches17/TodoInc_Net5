@@ -44,6 +44,11 @@ namespace TodoInc.Server.Persistence
 
         public Task<bool> UpdateTodoAsync(Todo todo) => Task.FromResult(Store.TryUpdate(todo.Id, todo, todo));
 
+        /// <summary>
+        /// Soft-deletes todoitem if it exists
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>false if todoitem doesn't exist, true if delete successful</returns>
         public Task<bool> DeleteTodoAsync(int id)
         {
             var todoExists = Store.TryGetValue(id, out var todo);

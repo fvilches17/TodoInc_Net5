@@ -18,7 +18,8 @@ else
     {
         <TodoCard @key="@todoRecord.Id"
               TodoRecord="@todoRecord"
-              OnCheckboxTicked="@(async id => await ToggleTodoCompletedStatusAsync(id))" />
+              OnCheckboxTicked="@(async id => await ToggleTodoCompletedStatusAsync(id))"
+              OnTodoDeleteButtonClick="@(async id => await DeleteTodoAsync(id))" />
         <hr />
     }
 }

@@ -74,5 +74,15 @@ namespace TodoInc.Server.Biz
             var newEntity = await _todosRepository.CreateTodoAsync(model.Title, model.Description);
             return new TodoRecord(newEntity.Id, newEntity.Title, newEntity.Description, IsComplete: false);
         }
+
+        public async Task<OperationStatus> DeleteTodoAsync(int id)
+        {
+            if (await _todosRepository.DeleteTodoAsync(id))
+            {
+                return OperationStatus.Success;
+            }
+
+            return OperationStatus.EntityNotFound;
+        }
     }
 }

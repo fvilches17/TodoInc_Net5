@@ -1,0 +1,27 @@
+﻿<div id="@_mapId" style="height: @(ElementHeight)px;" class="mb-5"></div>
+
+@code {
+
+    readonly string _mapId = $"map-{Guid.NewGuid()}";
+    const int DefaultZoomLevel = 18;
+
+    [Parameter]
+    public ushort ElementHeight {get; set;}
+
+    [Parameter]
+    public double XCoordinate { get; set; }
+
+    [Parameter]
+    public double YCoordinate { get; set; }
+
+    public double[] Coordinates => new []{ XCoordinate, YCoordinate };
+
+    [Inject]
+    public IJSRuntime JsRuntime { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("TodoIncMapOrchestrator.initializeMap", _mapId, Coordinates, DefaultZoomLevel);
+    }
+
+}

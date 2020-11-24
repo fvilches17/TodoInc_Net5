@@ -1,13 +1,30 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
+<div class="page" @onmousemove="@UpdateMouseCoordinates">
     <nav class="sidebar">
         <NavMenu />
     </nav>
 
     <main class="main">
         <div class="content px-4">
-            @Body
+            @Body   
         </div>
     </main>
+    
+    <div class="fixed-bottom text-right font-weight-bold">
+        <span>x: @MouseXPosition</span>
+        <span>y: @MouseYPosition</span>
+    </div>
 </div>
+
+@code
+{
+    public double MouseXPosition { get; set; }
+    public double MouseYPosition { get; set; }
+
+    public void UpdateMouseCoordinates(MouseEventArgs e)
+    {
+        MouseXPosition = e.ScreenX;
+        MouseYPosition = e.ScreenY;
+    }
+}

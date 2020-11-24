@@ -1,33 +1,46 @@
 ﻿@page "/jot"
-@using Blazor.Extensions
-@using Blazor.Extensions.Canvas.Canvas2D
+@using Excubo.Blazor.Canvas.Contexts
+@using TodoInc.Client.DomModels
 
 <h3>JotItDown</h3>
 
-<div class="border" @onmousemove="UpdateMouseCoordinatesAsync">
-    <BECanvas Width="800" Height="1000" @ref="@CanvasReference"></BECanvas>
+<div @ref="@_canvasWrapperElement" class="d-inline-block border" @onmousemove="UpdateMouseCoordinatesAsync">
+    <Canvas id="yay" @ref="@_canvas" width="500px" height="500px" />
 </div>
 
 @code {
     
+    private ElementReference _canvasWrapperElement;
+    private Canvas _canvas;
+    private Context2D _context2D;
+    private BoundingClientRect _canvasBoundingClientRect;
     const int PointSize = 5;
-    private Canvas2DContext _context;
-    protected BECanvasComponent CanvasReference;
+    
+    [Inject]
+    public IJSRuntime JsRuntime { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _context = await CanvasReference.CreateCanvas2DAsync();   
+        if (firstRender)
+        {
+            _context2D = await _canvas.GetContext2DAsync();
+            _canvasBoundingClientRect = await JsRuntime.InvokeAsync<BoundingClientRect>("TodoIncJsInteropHelper.getBoundingClientRect", _canvasWrapperElement);
+        }
     }
 
     public async Task UpdateMouseCoordinatesAsync(MouseEventArgs e)
     {
-        await _context.BeginPathAsync();
-        await _context.ArcAsync(e.OffsetX, e.OffsetY, PointSize, 0, Math.PI, anticlockwise: true); 
-        await _context.FillAsync();
+        await _context2D.BeginPathAsync();
+        await _context2D.ArcAsync(e.OffsetX, e.OffsetY, PointSize, 0, Math.PI, anticlockwise: true); 
+        await _context2D.FillAsync(FillRule.EvenOdd);
     }
 
-    public void UpdateTouchCoordinates(TouchEventArgs e)
+    public async Task UpdateTouchCoordinates(TouchEventArgs e)
     {
+        var x = e.Touches[0].ClientX - _canvasBoundingClientRect.Left;
+        var y = e.Touches[0].ClientY - _canvasBoundingClientRect.Top;
+        await _context2D.BeginPathAsync();
+        await _context2D.ArcAsync(x, y, PointSize, 0, Math.PI, anticlockwise: true); 
+        await _context2D.FillAsync(FillRule.EvenOdd);
     }
-
 }

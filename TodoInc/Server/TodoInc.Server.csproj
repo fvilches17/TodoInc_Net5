@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <UserSecretsId>86755bc0-1cf4-4fb1-8d0c-8a074939316c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

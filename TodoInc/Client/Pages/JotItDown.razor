@@ -8,9 +8,10 @@
 <div class="d-inline-block border"
      @ref="@_canvasWrapperElement"
      @onmousedown="SetMouseDownState"
-     @onmouseup="SetMouseUpState"
+     @onmouseup="ResetState"
      @onmousemove="UpdateMouseCoordinatesAsync"
-     @ontouchmove="UpdateTouchCoordinates">
+     @ontouchmove="UpdateTouchCoordinates"
+     @ontouchend="ResetState" >
 
     <BECanvas Height="@CanvasHeight" Width="@CanvasWidth" @ref="@CanvasReference"></BECanvas>
 </div>

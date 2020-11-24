@@ -37,13 +37,7 @@ namespace TodoInc.Client.Pages
         }
 
         public void SetMouseDownState() => _isMouseClickerDown = true;
-        public void SetMouseUpState()
-        {
-            _isMouseClickerDown = false;
-            _lastX = null;
-            _lastY = null;
-        }
-
+        
         public async Task UpdateMouseCoordinatesAsync(MouseEventArgs e)
         {
             if (!_isMouseClickerDown) return;
@@ -59,13 +53,8 @@ namespace TodoInc.Client.Pages
 
         private async Task TraceLineAsync(double x, double y)
         {
-            const double tolerance = 0.001;
-            static bool ArePointsEqual(double p1, double p2) => Math.Abs(p1 - p2) > tolerance;
-
-
-            if (_lastX is not null && _lastY is not null && (ArePointsEqual(x, _lastX.Value) || ArePointsEqual(y, _lastY.Value)))
+            if (_lastX is not null && _lastY is not null)
             {
-                await _canvas2DContext.SetFillStyleAsync("#000000");
                 await _canvas2DContext.SetLineWidthAsync(LineWidth);
                 await _canvas2DContext.BeginPathAsync();
                 await _canvas2DContext.MoveToAsync(_lastX.Value, _lastY.Value);
@@ -73,7 +62,6 @@ namespace TodoInc.Client.Pages
                 await _canvas2DContext.StrokeAsync();
             }
 
-            await _canvas2DContext.SetFillStyleAsync("#000000");
             await _canvas2DContext.BeginPathAsync();
             await _canvas2DContext.ArcAsync(x, y, PointSize, 0, Radius, anticlockwise: true);
             await _canvas2DContext.ClosePathAsync();
@@ -86,6 +74,11 @@ namespace TodoInc.Client.Pages
         private async Task ClearCanvasAsync()
         {
             await _canvas2DContext.ClearRectAsync(0, 0, CanvasWidth, CanvasHeight);
+            ResetState();
+        }
+
+        protected void ResetState()
+        {
             _lastX = null;
             _lastY = null;
             _isMouseClickerDown = false;

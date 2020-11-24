@@ -1,5 +1,6 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href=""><span class="oi oi-circle-check" aria-hidden="true"></span>Todo Inc</a>
+﻿@using System.Reflection
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href=""><span class="oi oi-circle-check" aria-hidden="true"></span>Todo Inc <small>(@AssemblyVersion)</small> </a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -25,6 +26,8 @@
     private bool _collapseNavMenu = true;
 
     private string NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
+
+    private string AssemblyVersion => GetType().Assembly.GetName().Version.ToString();
 
     private void ToggleNavMenu()
     {

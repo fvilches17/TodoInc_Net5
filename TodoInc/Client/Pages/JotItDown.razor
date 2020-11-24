@@ -1,0 +1,33 @@
+﻿@page "/jot"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
+
+<h3>JotItDown</h3>
+
+<div class="border" @onmousemove="UpdateMouseCoordinatesAsync">
+    <BECanvas Width="800" Height="1000" @ref="@CanvasReference"></BECanvas>
+</div>
+
+@code {
+    
+    const int PointSize = 5;
+    private Canvas2DContext _context;
+    protected BECanvasComponent CanvasReference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        _context = await CanvasReference.CreateCanvas2DAsync();   
+    }
+
+    public async Task UpdateMouseCoordinatesAsync(MouseEventArgs e)
+    {
+        await _context.BeginPathAsync();
+        await _context.ArcAsync(e.OffsetX, e.OffsetY, PointSize, 0, Math.PI, anticlockwise: true); 
+        await _context.FillAsync();
+    }
+
+    public void UpdateTouchCoordinates(TouchEventArgs e)
+    {
+    }
+
+}

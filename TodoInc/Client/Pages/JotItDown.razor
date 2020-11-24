@@ -1,46 +1,16 @@
 ﻿@page "/jot"
-@using Excubo.Blazor.Canvas.Contexts
-@using TodoInc.Client.DomModels
 
-<h3>JotItDown</h3>
-
-<div @ref="@_canvasWrapperElement" class="d-inline-block border" @onmousemove="UpdateMouseCoordinatesAsync">
-    <Canvas id="yay" @ref="@_canvas" width="500px" height="500px" />
+<div>
+    <h3 class="d-inline-block m-0">Jot it down</h3>
+    <button class="btn btn-dark pb-1 pt-1 pl-3 pr-3 mt-n3" @onclick="ClearCanvasAsync"><span class="oi oi-reload"></span></button>
 </div>
 
-@code {
-    
-    private ElementReference _canvasWrapperElement;
-    private Canvas _canvas;
-    private Context2D _context2D;
-    private BoundingClientRect _canvasBoundingClientRect;
-    const int PointSize = 5;
-    
-    [Inject]
-    public IJSRuntime JsRuntime { get; set; }
+<div class="d-inline-block border"
+     @ref="@_canvasWrapperElement"
+     @onmousedown="SetMouseDownState"
+     @onmouseup="SetMouseUpState"
+     @onmousemove="UpdateMouseCoordinatesAsync"
+     @ontouchmove="UpdateTouchCoordinates">
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _context2D = await _canvas.GetContext2DAsync();
-            _canvasBoundingClientRect = await JsRuntime.InvokeAsync<BoundingClientRect>("TodoIncJsInteropHelper.getBoundingClientRect", _canvasWrapperElement);
-        }
-    }
-
-    public async Task UpdateMouseCoordinatesAsync(MouseEventArgs e)
-    {
-        await _context2D.BeginPathAsync();
-        await _context2D.ArcAsync(e.OffsetX, e.OffsetY, PointSize, 0, Math.PI, anticlockwise: true); 
-        await _context2D.FillAsync(FillRule.EvenOdd);
-    }
-
-    public async Task UpdateTouchCoordinates(TouchEventArgs e)
-    {
-        var x = e.Touches[0].ClientX - _canvasBoundingClientRect.Left;
-        var y = e.Touches[0].ClientY - _canvasBoundingClientRect.Top;
-        await _context2D.BeginPathAsync();
-        await _context2D.ArcAsync(x, y, PointSize, 0, Math.PI, anticlockwise: true); 
-        await _context2D.FillAsync(FillRule.EvenOdd);
-    }
-}
+    <BECanvas Height="@CanvasHeight" Width="@CanvasWidth" @ref="@CanvasReference"></BECanvas>
+</div>

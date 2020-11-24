@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -57,7 +57,7 @@ namespace TodoInc.Client.Pages
         private async Task DeleteTodoAsync(int id)
         {
             var response = await ApiClient.DeleteAsync($"api/todos/{id}");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Unexpected error occured while deleting todo with id '{id}'");

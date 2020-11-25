@@ -48,7 +48,6 @@ namespace TodoInc.Client.Pages
             StateHasChanged();
         }
 
-
         private void ShowTodoQuickAddDialog()
         {
             TodoQuickAddModal.Show();

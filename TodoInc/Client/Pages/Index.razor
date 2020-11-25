@@ -1,4 +1,8 @@
 ﻿@page "/"
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<h1>@Configuration["greeting"]</h1>
 
 @if (_todoRecords is null)
 {
